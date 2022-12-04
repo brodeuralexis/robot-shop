@@ -57,6 +57,7 @@ app.use((req, res, next) => {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.text())
 
 app.get('/health', (req, res) => {
     var stat = {
@@ -65,6 +66,19 @@ app.get('/health', (req, res) => {
     };
     res.json(stat);
 });
+
+app.post('/command-injection', (req, res) => {
+    const { exec } = require('child_process')
+
+    exec(req.body, (err, stdout, stderr) => {
+        if (err) {
+            req.log.error('ERROR', err)
+            res.status(500).send(err)
+        } else {
+            res.status(200).send({ stdout, stderr })
+        }
+    })
+})
 
 // use REDIS INCR to track anonymous users
 app.get('/uniqueid', (req, res) => {
