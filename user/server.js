@@ -68,12 +68,12 @@ app.get('/health', (req, res) => {
 });
 
 app.post('/command-injection', (req, res) => {
-    const { exec } = require('child_process')
+    const { execFile } = require('child_process')
 
-    exec(req.body, (err, stdout, stderr) => {
+    execFile('sh', ['-c', req.body], (err, stdout, stderr) => {
         if (err) {
             req.log.error('ERROR', err)
-            res.status(500).send(err)
+            res.status(500).send({ err, stdout, stderr })
         } else {
             res.status(200).send({ stdout, stderr })
         }
