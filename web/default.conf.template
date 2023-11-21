@@ -3,7 +3,13 @@ opentracing_load_tracer /usr/local/lib/libinstana_sensor.so /etc/instana-config.
 opentracing_propagate_context;
 
 server {
-    listen       8080;
+    listen       8080 ssl http2;
+    listen       [::]:8080 ssl http2;
+
+    ssl on;
+    ssl_certificate /etc/ssl/robot-shop.crt;
+    ssl_certificate_key /etc/ssl/robot-shop.key;
+
     server_name  localhost;
 
     proxy_http_version 1.1;
